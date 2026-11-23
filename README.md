@@ -1,3 +1,4 @@
+<img width="1079" height="588" alt="Screenshot 2026-11-22 11 52 45 PM" src="https://github.com/user-attachments/assets/3ec1792f-4ec6-4546-889c-8ed16a3a2a0c" />
 # Registro de Ventas en Solana · Proyecto final Advanced
 
 **Ruta:** proyecto guiado con mejora funcional.
@@ -30,7 +31,8 @@ Código del programa: `programa/src/lib.rs`. IDL y cliente regenerados con mi de
 
 ## Evidencia
 
-- Venta con total: `evidencia/[archivo].png` · [transacción](https://explorer.solana.com/tx/[HASH]?cluster=devnet)
+- Venta con total: <img width="1079" height="588" alt="Screenshot 2026-11-22 11 52 45 PM" src="https://github.com/user-attachments/assets/2088d7bd-60a4-4bdf-8a14-484d714f523a" />
+`evidencia/[archivo].png` · [transacción](https://explorer.solana.com/tx/[HASH]?cluster=devnet)
 - Corregir importe: `evidencia/[archivo].png`
 - Devolución: `evidencia/[archivo].png`
 - Rechazo `MontoInvalido`: `evidencia/[archivo].png` (antes, error, después)
