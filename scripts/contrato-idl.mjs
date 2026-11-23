@@ -17,7 +17,7 @@ const tiposArgumentos = {
 };
 const camposEsperados = {
   registro: [['owner', 'pubkey'], ['nombrenegocio', 'string'], ['clientes', 'vec:pubkey'], ['idcounter', 'u16']],
-  cliente: [['idcliente', 'u16'], ['nombre', 'string'], ['compras', 'u16'], ['historial', 'vec:pubkey']],
+  cliente: [['idcliente', 'u16'], ['nombre', 'string'], ['compras', 'u16'], ['historial', 'vec:pubkey'], ['totalgastado', 'u32']],
   venta: [['sku', 'string'], ['descripcion', 'string'], ['monto', 'u32']],
 };
 const tipo = (valor) => typeof valor === 'string'

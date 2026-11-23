@@ -2,7 +2,7 @@
 
 Copia del programa `registro` de WayLearn, con Registro, Cliente y Venta. La procedencia y revisión están en `docs/ORIGENES.md`.
 
-- `src/lib.rs`: programa de referencia sin modificar.
+- src/lib.rs: programa del bootcamp con la mejora total_gastado y validación de monto (ver README principal)."
 - `client/client.ts`: cliente de referencia para Solana Playground.
 
 Esta carpeta no es un workspace Anchor CLI completo. El `declare_id!("")` de la fuente es el marcador del material de Playground; el proyecto de Playground debe gestionar la dirección real del programa antes de compilar y desplegar.

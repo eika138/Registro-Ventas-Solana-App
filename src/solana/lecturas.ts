@@ -23,6 +23,7 @@ export type ClienteUI = {
   idCliente: number;
   nombre: string;
   compras: number;
+  totalGastado: number;
   ventas: { direccion: Address; sku: string; descripcion: string; monto: number }[];
 };
 
@@ -61,6 +62,7 @@ export async function leerRegistro(
         idCliente: c.data.idCliente,
         nombre: c.data.nombre,
         compras: c.data.compras,
+        totalGastado: c.data.totalGastado,
         ventas: ventas.map((v) => ({
           direccion: v.address,
           sku: v.data.sku,

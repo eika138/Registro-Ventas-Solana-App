@@ -2,7 +2,7 @@
 import { PublicKey } from "@solana/web3.js";
 
 ////////////////// Constantes ////////////////////
-const nombre_negocio = "Abarrotes Tsting"; // Nombre del punto de venta
+const nombre_negocio = "Prueba Rechazo"; // Nombre del punto de venta
 const owner = pg.wallet.publicKey; // Wallet
 
 //////////////////// Client Test Logs ////////////////////
@@ -280,11 +280,12 @@ async function clienteNuevoConVenta(
   console.log("Alta completa para el cliente con id:", id_cliente);
 }
 
-crearRegistro(nombre_negocio);
-// clienteNuevoConVenta(nombre_negocio, "Isaac K", "Sabritas", "No puedes comer solo una", 30);
+//crearRegistro(nombre_negocio);
+//clienteNuevoConVenta(nombre_negocio, "Isaac K", "Sabritas", "No puedes comer solo una", 30);
 // registrarVenta(nombre_negocio, 1, "Coca", "Coca de sabor pineapple", 18);
 // cambiarMonto(nombre_negocio, 1, "Sabritas", 32);
 // hacerDevolucion(nombre_negocio, 1, "Coca");
-// verClientes(nombre_negocio);
+verClientes(nombre_negocio);
+//await registrarVenta(nombre_negocio, 1, "Papas", "prueba", 0);
 
 // solana confirm -v <txHash>

@@ -106,8 +106,7 @@ export function Registro({ onCambio, onOcupado }: { onCambio: () => void; onOcup
           <details className="technical-details"><summary>Dirección del registro</summary><code className="address">{registro.direccion}</code></details>
           {registro.clientes.length === 0 ? <p className="empty-line">Todavía no hay clientes. Puedes crear el primero desde Operaciones.</p> : registro.clientes.map((cliente) => <article className="customer" key={cliente.direccion}>
             <header><div><strong>{cliente.nombre}</strong><span className="small-note">Cliente #{cliente.idCliente} · {cliente.compras} ventas activas</span></div><button className="text-button" disabled={ocupado} onClick={() => { setIdCliente(String(cliente.idCliente)); setOp('venta'); }}>Seleccionar</button></header>
-            {cliente.ventas.length === 0 ? <p className="empty-line">Sin ventas activas.</p> : <div className="table-wrap"><table><thead><tr><th>SKU</th><th>Descripción</th><th className="numeric">Importe</th></tr></thead><tbody>{cliente.ventas.map((venta) => <tr key={venta.direccion} onClick={() => { if (!ocupado) { setIdCliente(String(cliente.idCliente)); setSku(venta.sku); setMonto(String(venta.monto)); setOp('monto'); } }}><td><code>{venta.sku}</code></td><td>{venta.descripcion}</td><td className="numeric">{venta.monto.toLocaleString('es-MX')} <small>{UNIDAD_MONTO}</small></td></tr>)}</tbody></table></div>}
-          </article>)}
+Cliente #{cliente.idCliente} · {cliente.compras} ventas activas · Total gastado: ${cliente.totalGastado}          </article>)}
         </>}
       </section>
       <section className="panel operations-panel"><div className="panel-heading"><h3>Operaciones</h3><span className="small-note">Con firma</span></div>

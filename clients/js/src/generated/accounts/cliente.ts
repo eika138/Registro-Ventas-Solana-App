@@ -63,6 +63,7 @@ export type Cliente = {
   nombre: string;
   compras: number;
   historial: Array<Address>;
+  totalGastado: number;
 };
 
 export type ClienteArgs = {
@@ -70,6 +71,7 @@ export type ClienteArgs = {
   nombre: string;
   compras: number;
   historial: Array<Address | HasAddress>;
+  totalGastado: number;
 };
 
 /** Gets the encoder for {@link ClienteArgs} account data. */
@@ -81,6 +83,7 @@ export function getClienteEncoder(): Encoder<ClienteArgs> {
       ["nombre", addEncoderSizePrefix(getUtf8Encoder(), getU32Encoder())],
       ["compras", getU16Encoder()],
       ["historial", getArrayEncoder(getAddressEncoder())],
+      ["totalGastado", getU32Encoder()],
     ]),
     (value) => ({ ...value, discriminator: CLIENTE_DISCRIMINATOR }),
   );
@@ -94,6 +97,7 @@ export function getClienteDecoder(): Decoder<Cliente> {
     ["nombre", addDecoderSizePrefix(getUtf8Decoder(), getU32Decoder())],
     ["compras", getU16Decoder()],
     ["historial", getArrayDecoder(getAddressDecoder())],
+    ["totalGastado", getU32Decoder()],
   ]);
 }
 

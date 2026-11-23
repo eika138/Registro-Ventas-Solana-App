@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("");
+declare_id!("9tphV3N1Xb3uLFiuG4FG9pNVAfgpTtm96oN1BgYFiUyC");
 
 #[program]
 pub mod registro {
@@ -40,6 +40,7 @@ pub mod registro {
             nombre: nombre.clone(), // .clone() para no ceder la propiedad porque el String se reusa en el msg!
             compras: 0,             // Nace sin compras: registrar_venta es quien incrementa
             historial: Vec::new(),
+            total_gastado: 0,
         });
 
         msg!("Cliente {} creado con id: {}", nombre, id_cliente); // Log de verificacion
@@ -51,32 +52,39 @@ pub mod registro {
     // id_cliente y sku no se usan en el cuerpo: viajan al contexto para derivar y validar
     // las cuentas. Ver NuevaVenta.
     pub fn registrar_venta(
-        context: Context<NuevaVenta>,
-        _id_cliente: u16,
-        sku: String,
-        descripcion: String,
-        monto: u32,
-    ) -> Result<()> {
-        context.accounts.venta.set_inner(Venta {
-            sku,
-            descripcion,
-            monto,
-        }); // Serializa y guarda el struct en la cuenta de la venta
+    context: Context<NuevaVenta>,
+    _id_cliente: u16,
+    sku: String,
+    descripcion: String,
+    monto: u32,
+) -> Result<()> {
+    require!(monto > 0, Errores::MontoInvalido); // Rechaza antes de crear nada
 
-        let venta_key = context.accounts.venta.key(); // Se lee ANTES del &mut de cliente
+    context.accounts.venta.set_inner(Venta {
+        sku,
+        descripcion,
+        monto,
+    }); // Serializa y guarda el struct en la cuenta de la venta
 
-        let cliente = &mut context.accounts.cliente;
+    let venta_key = context.accounts.venta.key(); // Se lee ANTES del &mut de cliente
 
-        cliente.historial.push(venta_key); // El historial guarda PDAs, no structs completos
-        cliente.compras += 1;
+    let cliente = &mut context.accounts.cliente;
 
-        msg!(
-            "Venta registrada para el cliente con id: {}",
-            cliente.id_cliente
-        ); // Log de verificacion
+    cliente.historial.push(venta_key); // El historial guarda PDAs, no structs completos
+    cliente.compras += 1;
+    cliente.total_gastado = cliente
+        .total_gastado
+        .checked_add(monto)
+        .ok_or(Errores::TotalInvalido)?; // Suma el monto; falla si el u32 se desborda
 
-        Ok(())
-    }
+    msg!(
+        "Venta registrada para el cliente con id: {}",
+        cliente.id_cliente
+    ); // Log de verificacion
+
+    Ok(())
+}
+
 
     /////////////////////////// Hacer Devolucion ///////////////////////////
     // El contexto EliminarVenta lleva "close = owner": la cuenta de la venta se cierra al final
@@ -89,7 +97,11 @@ pub mod registro {
         let venta_key = context.accounts.venta.key(); // Se lee ANTES del &mut de cliente
 
         let cliente = &mut context.accounts.cliente;
-
+        let monto_venta = context.accounts.venta.monto; // antes del &mut de cliente
+       cliente.total_gastado = cliente
+       .total_gastado
+        .checked_sub(monto_venta)
+        .ok_or(Errores::TotalInvalido)?;
         require!(cliente.historial.contains(&venta_key), Errores::NoSKU);
         // La venta existe y pertenece a este cliente (lo garantizan las seeds), pero el historial
         // es el indice de lectura: si la referencia no esta, restar compras lo desincronizaria.
@@ -118,6 +130,15 @@ pub mod registro {
         let venta = &mut context.accounts.venta;
         let viejo_monto = venta.monto;
         venta.monto = nuevo_monto;
+        require!(nuevo_monto > 0, Errores::MontoInvalido);
+        // ...
+         let cliente = &mut context.accounts.cliente;
+         cliente.total_gastado = cliente
+         .total_gastado
+         .checked_sub(viejo_monto)
+         .ok_or(Errores::TotalInvalido)?
+         .checked_add(nuevo_monto)
+         .ok_or(Errores::TotalInvalido)?;
 
         msg!(
             "El monto de la venta con sku: {}, paso de: {}, a: {}",
@@ -137,6 +158,10 @@ pub enum Errores {
     NoOwner,
     #[msg("Error, la venta no esta en el historial del cliente")]
     NoSKU,
+     #[msg("Error, el monto debe ser mayor a 0")]
+     MontoInvalido,
+     #[msg("Error, el total gastado no es valido")]
+     TotalInvalido,
 }
 
 /////////////////////////// CUENTAS ///////////////////////////
@@ -170,6 +195,7 @@ pub struct Cliente {
 
     #[max_len(10)]
     historial: Vec<Pubkey>,
+    total_gastado: u32,
 }
 
 /////////////////////////// Venta ///////////////////////////
@@ -292,7 +318,7 @@ pub struct ModificarVenta<'info> {
     pub registro: Account<'info, Registro>,
 
     #[account(
-        seeds = [b"cliente", registro.key().as_ref(), id_cliente.to_le_bytes().as_ref()],
+        mut, seeds = [b"cliente", registro.key().as_ref(), id_cliente.to_le_bytes().as_ref()],
         bump
     )]
     pub cliente: Account<'info, Cliente>, // Sin mut: solo se lee, para derivar la venta

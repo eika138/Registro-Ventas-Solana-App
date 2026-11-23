@@ -1,9 +1,6 @@
 {
   "version": "0.1.0",
   "name": "registro",
-  "metadata": {
-    "address": "38oTMyvUTmqkBQeMiuok5F2mPjp9dVadWdBeQTDNmTUY"
-  },
   "instructions": [
     {
       "name": "crearRegistro",
@@ -160,7 +157,7 @@
         },
         {
           "name": "cliente",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -234,6 +231,10 @@
             "type": {
               "vec": "publicKey"
             }
+          },
+          {
+            "name": "totalGastado",
+            "type": "u32"
           }
         ]
       }
@@ -269,6 +270,19 @@
       "code": 6001,
       "name": "NoSKU",
       "msg": "Error, la venta no esta en el historial del cliente"
+    },
+    {
+      "code": 6002,
+      "name": "MontoInvalido",
+      "msg": "Error, el monto debe ser mayor a 0"
+    },
+    {
+      "code": 6003,
+      "name": "TotalInvalido",
+      "msg": "Error, el total gastado no es valido"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "9tphV3N1Xb3uLFiuG4FG9pNVAfgpTtm96oN1BgYFiUyC"
+  }
 }

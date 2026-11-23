@@ -78,7 +78,7 @@ export type CambiarMontoInstruction<
         ? ReadonlyAccount<TAccountRegistro>
         : TAccountRegistro,
       TAccountCliente extends string
-        ? ReadonlyAccount<TAccountCliente>
+        ? WritableAccount<TAccountCliente>
         : TAccountCliente,
       TAccountVenta extends string
         ? WritableAccount<TAccountVenta>
@@ -203,7 +203,7 @@ export function getCambiarMontoInstruction<
     cliente: {
       value: input.cliente ?? null,
       isSigner: false,
-      isWritable: false,
+      isWritable: true,
     },
     venta: { value: input.venta ?? null, isSigner: false, isWritable: true },
   };
